@@ -2,5 +2,12 @@
 
 class Clip {
 public:
-    int samplerate;
+    float time;
+    float* samples;
+
+    Clip(int t);
+    ~Clip();
+
+    Clip(const Clip&) = delete;
+    Clip& operator=(const Clip&) = delete;
 };

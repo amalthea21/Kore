@@ -8,6 +8,7 @@ add_executable(Kore main.cpp
         include/TerminalFace.h
         src/Clip.cpp
         include/Clip.h
-        src/Track.cpp
         include/AnsiFormat.h
+        include/Track.cpp
+        include/Track.h
 )
