@@ -26,7 +26,3 @@ void TerminalFace::restoreTerminal() {
         perror("tcsetattr restore");
 }
 #pragma endregion
-
-void printTrack(Track track) {
-    for (int i = 0; i < track.clip)
-}
