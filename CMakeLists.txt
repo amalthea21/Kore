@@ -3,4 +3,11 @@ project(Kore)
 
 set(CMAKE_CXX_STANDARD 26)
 
-add_executable(Kore main.cpp)
+add_executable(Kore main.cpp
+        src/TerminalFace.cpp
+        include/TerminalFace.h
+        src/Clip.cpp
+        include/Clip.h
+        src/Track.cpp
+        include/Track.h
+)
