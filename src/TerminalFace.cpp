@@ -47,7 +47,7 @@ int TerminalFace::terminalWidth() {
  */
 
 void TerminalFace::printTop() {
-    const int elementCount = 2;
+    const int elementCount = 3;
 
     struct element {
         std::string str;
@@ -62,6 +62,9 @@ void TerminalFace::printTop() {
 
     interface[1].row = 0;
     interface[1].str = " Quit: F1 ";
+
+    interface[2].row = 0;
+    interface[2].str = " File: F2";
 
     for (int i = 0; i < elementCount; i++) {
         std::string content = interface[i].str;
