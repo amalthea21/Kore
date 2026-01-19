@@ -10,4 +10,6 @@ public:
 
     Clip(const Clip&) = delete;
     Clip& operator=(const Clip&) = delete;
+    Clip(Clip&& other) noexcept;
+    Clip& operator=(Clip&& other) noexcept;
 };
