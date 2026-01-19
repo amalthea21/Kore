@@ -15,4 +15,6 @@ public:
 private:
     termios old;
     termios term;
+
+    int terminalWidth();
 };

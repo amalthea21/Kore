@@ -3,10 +3,11 @@
 #include <unistd.h>
 #include <cstdio>
 #include <string>
+#include <sys/ioctl.h>
 
 #include "../include/AnsiFormat.h"
 
-#pragma region Initialize/Restore Terminal
+#pragma region Terminal
 TerminalFace::TerminalFace() {
     std::cout << ANSI::HIDE_CURSOR << ANSI::RESET << std::endl;
     fflush(stdout);
@@ -31,6 +32,13 @@ void TerminalFace::restoreTerminal() {
     if (tcsetattr(0, TCSANOW, &old) < 0)
         perror("tcsetattr restore");
 }
+
+int TerminalFace::terminalWidth() {
+    struct winsize w;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    return w.ws_col;
+}
+
 #pragma endregion
 
 #pragma region UI
@@ -39,21 +47,23 @@ void TerminalFace::restoreTerminal() {
  */
 
 void TerminalFace::printTop() {
+    const int elementCount = 2;
+
     struct element {
         std::string str;
         int row;
     };
 
     std::vector<std::string> lines(2);
-    element interface[2] {};
+    element interface[elementCount] {};
 
     interface[0].row = 0;
-    interface[0].str = "▶ : ‖";
+    interface[0].str = " ▶ : ‖ ";
 
     interface[1].row = 0;
-    interface[1].str = "Quit: F1";
+    interface[1].str = " Quit: F1 ";
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < elementCount; i++) {
         std::string content = interface[i].str;
 
         int displayWidth = 0;
@@ -101,17 +111,37 @@ void TerminalFace::printTop() {
 }
 
 void TerminalFace::printPlaylist(const std::vector<Track>& playlist) {
+    int termWidth = terminalWidth();
 
-    std::cout << "╭──────────┬";
+    int fixedWidth = 14;
+    int remainingWidth = termWidth - fixedWidth;
+    if (remainingWidth < 0) remainingWidth = 0;
+
+    std::cout << "╭───────────┬";
+    for (int i = 0; i < remainingWidth; i++) {
+        std::cout << "─";
+    }
+    std::cout << "╮";
 
     for (int i = 0; i < playlist.size(); i++) {
         std::string circle;
 
         if (playlist[i].on)
-            circle = ANSI::GREEN + " ◉" + ANSI::RESET;
-        else circle = " ◉";
+            circle = ANSI::GREEN + " ◉ " + ANSI::RESET;
+        else
+            circle = " ◉ ";
 
         std::cout << "\n├ Track " << i+1 << circle << "│";
+        for (int j = 0; j < remainingWidth; j++) {
+            std::cout << " ";
+        }
+        std::cout << "│";
     }
+
+    std::cout << "\n╰───────────┴";
+    for (int i = 0; i < remainingWidth; i++) {
+        std::cout << "─";
+    }
+    std::cout << "╯" << std::endl;
 }
-#pragma endregion UI
+#pragma endregion
