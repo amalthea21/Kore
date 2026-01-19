@@ -1,5 +1,5 @@
-//
-// Created by amalthea on 19.01.26.
-//
-
 #include "../include/Track.h"
+
+Track::Track(int tracks) {
+    clip[tracks];
+}

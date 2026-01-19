@@ -5,5 +5,7 @@
 class Track {
 public:
     bool on;
-    Clip* clip;
+    Clip* clip[];
+
+    Track(int tracks);
 };

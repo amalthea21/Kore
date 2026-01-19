@@ -10,4 +10,5 @@ add_executable(Kore main.cpp
         include/Clip.h
         src/Track.cpp
         include/Track.h
+        include/AnsiFormat.h
 )
