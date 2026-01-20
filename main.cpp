@@ -7,6 +7,7 @@
 #include "include/AnsiFormat.h"
 #include "include/WaveGenerator.h"
 
+
 int main(int argc, char* argv[]) {
     TerminalFace terminalFace{};
     WaveGenerator waveGenerator{};
@@ -24,6 +25,7 @@ int main(int argc, char* argv[]) {
         std::cout << std::flush;
 
         key = terminalFace.readKey();
+
     } while (key != TerminalFace::KEY_F1);
 
     terminalFace.restoreTerminal();

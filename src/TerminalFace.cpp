@@ -107,70 +107,15 @@ int TerminalFace::terminalWidth() {
  */
 
 void TerminalFace::printTop() {
-    const int elementCount = 3;
+    std::string top = " Kore v0.1";
+    int termWidth = terminalWidth();
+    top.resize(termWidth, ' ');
 
-    struct element {
-        std::string str;
-        int row;
-    };
+    std::cout << ANSI::BG_WHITE << ANSI::BLACK << top << ANSI::RESET << std::endl;
 
-    std::vector<std::string> lines(2);
-    element interface[elementCount] {};
-
-    interface[0].row = 0;
-    interface[0].str = " ▶ : ‖ ";
-
-    interface[1].row = 0;
-    interface[1].str = " Quit: F1 ";
-
-    interface[2].row = 0;
-    interface[2].str = " File: F2";
-
-    for (int i = 0; i < elementCount; i++) {
-        std::string content = interface[i].str;
-
-        int displayWidth = 0;
-        for (size_t j = 0; j < content.length(); ) {
-            unsigned char c = content[j];
-            if ((c & 0x80) == 0) {
-                // ASCII character (1 byte)
-                displayWidth++;
-                j++;
-            } else if ((c & 0xE0) == 0xC0) {
-                // 2-byte UTF-8
-                displayWidth++;
-                j += 2;
-            } else if ((c & 0xF0) == 0xE0) {
-                // 3-byte UTF-8
-                displayWidth++;
-                j += 3;
-            } else {
-                // 4-byte UTF-8
-                displayWidth++;
-                j += 4;
-            }
-        }
-
-        std::string topBorder = "╭─" + content + "─╮";
-
-        std::string bottomBorder = "╰";
-        for (int j = 0; j < displayWidth + 2; j++) {
-            bottomBorder += "─";
-        }
-        bottomBorder += "╯";
-
-        lines[0] += topBorder;
-        lines[1] += bottomBorder;
-
-        if (i < 1) {
-            lines[0] += " ";
-            lines[1] += " ";
-        }
-    }
-
-    for (size_t i = 0; i < lines.size(); i++) {
-        std::cout << lines[i] << "\n";
-    }
+    std::cout << "\n╭─ ▶ : ‖ ─╮  ╭─ Quit: F1 ─╮  ╭─ File: F2 ─╮"
+                 "\n╰─────────╯  ╰────────────╯  ╰────────────╯"
+              << std::endl;
 }
 
 void TerminalFace::printPlaylist(const std::vector<Track>& playlist) {
