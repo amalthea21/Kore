@@ -8,6 +8,7 @@
 #include "include/WaveGenerator.h"
 
 
+
 int main(int argc, char* argv[]) {
     TerminalFace terminalFace{};
     WaveGenerator waveGenerator{};
