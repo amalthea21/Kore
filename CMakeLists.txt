@@ -22,4 +22,6 @@ add_executable(Kore main.cpp
         src/WaveGenerator.cpp
         src/Display.cpp
         include/Display.h
+        include/ClipDialog.h
+        src/ClipDialog.cpp
 )
