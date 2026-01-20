@@ -90,6 +90,10 @@ int main(int argc, char* argv[]) {
     appState.playlist.push_back(Track{});
     appState.cursor.moveTo(15, 5);
 
+    appState.playlist[0].track[0].time = 2;
+    appState.playlist[0].track[0].at = 0;
+    appState.playlist[0].track[0].samples = waveGenerator.Generate(WaveGenerator::SINE, appState.playlist[0].track[0].time, 440);
+
     Event key;
 
     do {
