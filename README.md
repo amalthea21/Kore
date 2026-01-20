@@ -16,3 +16,22 @@ Kore is a lightweight, keyboard-driven DAW, running entirely in the terminal
 
 - 🎵 **Wave Generator**: Takes in parameters such as frequency, time or shape, and
   generates an according sample in a 44.1kHz standard
+
+## 🛠️ **Building/Running:
+
+For building the project, run these commands sequentially:
+
+```
+Kore: mkdir build
+Kore: cd build
+Kore/build: cmake ..
+Kore/build: make
+```
+
+### Running;
+
+For running it, run this:
+
+```
+Kore/build: ./Kore
+```
