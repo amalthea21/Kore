@@ -10,6 +10,8 @@ Kore is a lightweight, keyboard-driven DAW, running entirely in the terminal
 - 🎹 **Multi-Track Playlist**: Mute tracks and place clips in them cannonically
 - 🎵 **Clip System**: Create Clips with various types of notes, shapes, fading...
 
+<br><br>
+
 ## 🏗️ **Architecture**:
 
 - 🛤️ **Track**: Container for audio clips, with mute/solo controls
@@ -17,7 +19,9 @@ Kore is a lightweight, keyboard-driven DAW, running entirely in the terminal
 - 🎵 **Wave Generator**: Takes in parameters such as frequency, time or shape, and
   generates an according sample in a 44.1kHz standard
 
-## 🛠️ **Building/Running:
+<br><br>
+
+## 🛠️ **Building/Running**:
 
 For building the project, run these commands sequentially:
 
@@ -35,3 +39,5 @@ For running it, run this:
 ```
 Kore/build: ./Kore
 ```
+
+<br><br>
