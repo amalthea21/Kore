@@ -4,13 +4,20 @@ project(Kore)
 set(CMAKE_CXX_STANDARD 26)
 
 add_executable(Kore main.cpp
-        src/TerminalFace.cpp
-        include/TerminalFace.h
-        src/Clip.cpp
-        include/Clip.h
         include/AnsiFormat.h
-        src/Track.cpp
+
+        include/Clip.h
+        src/Clip.cpp
+
+        include/Cursor.h
+        src/Cursor.cpp
+
+        include/TerminalFace.h
+        src/TerminalFace.cpp
+
         include/Track.h
-        src/WaveGenerator.cpp
+        src/Track.cpp
+
         include/WaveGenerator.h
+        src/WaveGenerator.cpp
 )

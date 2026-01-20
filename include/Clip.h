@@ -2,6 +2,7 @@
 
 class Clip {
 public:
+    float at;
     float time;
     float* samples;
 
