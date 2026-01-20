@@ -1,5 +1,4 @@
 #include <vector>
-#include <thread>
 
 #include "include/TerminalFace.h"
 #include "include/Clip.h"
@@ -18,7 +17,6 @@ int main(int argc, char* argv[]) {
     playlist.push_back(Track{});
     playlist.push_back(Track{});
 
-    // Set initial cursor position
     cursor.moveTo(15, 5);
 
     int key;
