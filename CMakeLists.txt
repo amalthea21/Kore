@@ -12,12 +12,14 @@ add_executable(Kore main.cpp
         include/Cursor.h
         src/Cursor.cpp
 
-        include/TerminalFace.h
-        src/TerminalFace.cpp
+        include/TerminalSettings.h
+        src/TerminalSettings.cpp
 
         include/Track.h
         src/Track.cpp
 
         include/WaveGenerator.h
         src/WaveGenerator.cpp
+        include/Display.cpp
+        include/Display.h
 )

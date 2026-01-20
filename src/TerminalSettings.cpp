@@ -1,4 +1,4 @@
-#include "../include/TerminalFace.h"
+#include "../include/TerminalSettings.h"
 
 #include <unistd.h>
 #include <cstdio>
@@ -7,8 +7,7 @@
 
 #include "../include/AnsiFormat.h"
 
-#pragma region Terminal
-TerminalFace::TerminalFace() {
+TerminalSettings::TerminalSettings() {
     std::cout << ANSI::CLEAR_SCREEN << ANSI::HIDE_CURSOR << ANSI::RESET;
     fflush(stdout);
 
@@ -26,14 +25,14 @@ TerminalFace::TerminalFace() {
         perror("tcsetattr ICANON");
 }
 
-void TerminalFace::restoreTerminal() {
+void TerminalSettings::restoreTerminal() {
     std::cout << ANSI::SHOW_CURSOR << ANSI::RESET;
 
     if (tcsetattr(0, TCSANOW, &old) < 0)
         perror("tcsetattr restore");
 }
 
-int TerminalFace::readKey() {
+int TerminalSettings::readKey() {
     char c;
     if (read(STDIN_FILENO, &c, 1) != 1)
         return KEY_UNKNOWN;
@@ -93,68 +92,8 @@ int TerminalFace::readKey() {
     return c;
 }
 
-int TerminalFace::terminalWidth() {
+int TerminalSettings::terminalWidth() {
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     return w.ws_col;
 }
-
-#pragma endregion
-
-#pragma region UI
-/* UI Characters: ─ │ ├ ┤ ┬ ┴ ┼ ╭ ╮ ╰ ╯ ◉
- * TODO: Dynamic Length of UI Elements
- */
-
-void TerminalFace::printTop() {
-    std::string top = " Kore v0.1";
-    int termWidth = terminalWidth();
-    top.resize(termWidth, ' ');
-
-    std::cout << ANSI::BG_WHITE << ANSI::BLACK << top << ANSI::RESET << std::endl;
-
-    std::cout << "\n╭─ ▶ : ‖ ─╮  ╭─ Quit: F1 ─╮  ╭─ File: F2 ─╮"
-                 "\n╰─────────╯  ╰────────────╯  ╰────────────╯"
-                 "\n"
-              << std::endl;
-}
-
-void TerminalFace::printPlaylist(const std::vector<Track>& playlist) {
-    int termWidth = terminalWidth();
-
-    int fixedWidth = 14;
-    int remainingWidth = termWidth - fixedWidth;
-    if (remainingWidth < 0) remainingWidth = 0;
-
-    if (playlist.empty())
-        return;
-
-    std::cout << "╭───────────┬";
-    for (int i = 0; i < remainingWidth; i++) {
-        std::cout << "─";
-    }
-    std::cout << "╮";
-
-    for (int i = 0; i < playlist.size(); i++) {
-
-        std::string circle;
-
-        if (playlist[i].on)
-            circle = ANSI::GREEN + " ◉ " + ANSI::RESET;
-        else
-            circle = " ◉ ";
-
-        std::cout << "\n├ Track " << i+1 << circle << "│";
-        for (int j = 0; j < remainingWidth; j++) {
-            std::cout << " ";
-        }
-        std::cout << "│";
-    }
-
-    std::cout << "\n╰───────────┴";
-    for (int i = 0; i < remainingWidth; i++) {
-        std::cout << "─";
-    }
-    std::cout << "╯";
-}
-#pragma endregion

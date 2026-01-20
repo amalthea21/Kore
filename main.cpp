@@ -1,11 +1,12 @@
 #include <vector>
 
-#include "include/TerminalFace.h"
+#include "include/TerminalSettings.h"
 #include "include/Clip.h"
 #include "include/Track.h"
 #include "include/Cursor.h"
 #include "include/AnsiFormat.h"
 #include "include/WaveGenerator.h"
+#include "include/Display.h"
 
 struct AppState {
     Cursor cursor;
@@ -22,15 +23,15 @@ enum Event {
 
 Event getEvent(int key) {
     switch (key) {
-        case TerminalFace::KEY_F1: return QUIT;
+        case TerminalSettings::KEY_F1: return QUIT;
 
-        case TerminalFace::KEY_ARROW_UP: return CURSOR_UP;
-        case TerminalFace::KEY_ARROW_DOWN: return CURSOR_DOWN;
-        case TerminalFace::KEY_ARROW_LEFT: return CURSOR_LEFT;
-        case TerminalFace::KEY_ARROW_RIGHT: return CURSOR_RIGHT;
+        case TerminalSettings::KEY_ARROW_UP: return CURSOR_UP;
+        case TerminalSettings::KEY_ARROW_DOWN: return CURSOR_DOWN;
+        case TerminalSettings::KEY_ARROW_LEFT: return CURSOR_LEFT;
+        case TerminalSettings::KEY_ARROW_RIGHT: return CURSOR_RIGHT;
 
         case ' ': return SELECT;
-        case TerminalFace::KEY_DELETE: return DELETE;
+        case TerminalSettings::KEY_DELETE: return DELETE;
     }
 }
 
@@ -80,7 +81,8 @@ void eventHandler(Event event, AppState &state) {
 }
 
 int main(int argc, char* argv[]) {
-    TerminalFace terminalFace{};
+    TerminalSettings terminalSettings{};
+    Display display;
     WaveGenerator waveGenerator{};
     AppState appState{};
 
@@ -93,18 +95,17 @@ int main(int argc, char* argv[]) {
     do {
         std::cout << ANSI::CLEAR_SCREEN;
         std::cout << "\033[H";
-        terminalFace.printTop();
-        terminalFace.printPlaylist(appState.playlist);
-        std::cout << appState.isPlaying << std::endl;
+        display.printTop(terminalSettings.terminalWidth());
+        display.printPlaylist(appState.playlist, terminalSettings.terminalWidth());
 
         appState.cursor.show();
 
         std::cout << std::flush;
 
-        key = getEvent(terminalFace.readKey());
+        key = getEvent(terminalSettings.readKey());
         eventHandler(key, appState);
 
     } while (key != QUIT);
 
-    terminalFace.restoreTerminal();
+    terminalSettings.restoreTerminal();
 }

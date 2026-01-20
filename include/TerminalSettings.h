@@ -6,7 +6,7 @@
 
 #include "Track.h"
 
-class TerminalFace {
+class TerminalSettings {
 public:
     enum Key {
         KEY_UNKNOWN = 0,
@@ -61,16 +61,11 @@ public:
         KEY_CTRL_Z = 26
     };
 
-    TerminalFace();
+    TerminalSettings();
     void restoreTerminal();
-
+    int terminalWidth();
     int readKey();
-
-    void printTop();
-    void printPlaylist(const std::vector<Track>& playlist);
 private:
     termios old;
     termios term;
-
-    int terminalWidth();
 };
