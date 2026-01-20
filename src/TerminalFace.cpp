@@ -115,6 +115,7 @@ void TerminalFace::printTop() {
 
     std::cout << "\n╭─ ▶ : ‖ ─╮  ╭─ Quit: F1 ─╮  ╭─ File: F2 ─╮"
                  "\n╰─────────╯  ╰────────────╯  ╰────────────╯"
+                 "\n"
               << std::endl;
 }
 

@@ -10,12 +10,14 @@
 struct AppState {
     Cursor cursor;
     std::vector<Track> playlist;
+    bool isPlaying = false;
 };
 
 enum Event {
     QUIT,
     CURSOR_UP, CURSOR_DOWN, CURSOR_LEFT, CURSOR_RIGHT,
-    SELECT, DELETE
+    SELECT, DELETE,
+    PLAY, PAUSE
 };
 
 Event getEvent(int key) {
@@ -46,14 +48,20 @@ void deleteHandler(AppState &state) {
 }
 
 void selectHandler(AppState &state) {
-    int trackY = state.cursor.getY();
+    int cursorX = state.cursor.getX();
+    int cursorY = state.cursor.getY();
 
-    // Check if cursor is on existing tracks
-    if (trackY >= 5 && trackY < 5 + state.playlist.size()) {
-        int trackIndex = trackY - 5;
+    if (cursorY == 2 && cursorX >= 3 && cursorX <= 5) { // Play
+        state.isPlaying = true;
+    }
+    else if (cursorY == 2 && cursorX >= 7 && cursorX <= 9) { // Pause
+        state.isPlaying = false;
+    }
+    else if (cursorY >= 6 && cursorY < 5 + state.playlist.size()) { // Mute/Solo tracks
+        int trackIndex = cursorY - 5;
         state.playlist[trackIndex].on = !state.playlist[trackIndex].on;
     }
-    else if (trackY == 5 + state.playlist.size()) {
+    else if (cursorY == 6 + state.playlist.size()) { // Add tracks
         state.playlist.push_back(Track{});
     }
 }
@@ -66,17 +74,19 @@ void eventHandler(Event event, AppState &state) {
         case CURSOR_RIGHT: state.cursor.moveRight(); break;
         case SELECT: selectHandler(state); break;
         case DELETE: deleteHandler(state); break;
+        case PLAY: state.isPlaying = true; break;
+        case PAUSE: state.isPlaying = false; break;
     }
 }
 
 int main(int argc, char* argv[]) {
     TerminalFace terminalFace{};
     WaveGenerator waveGenerator{};
+    AppState appState{};
 
-    AppState state{};
-    state.playlist.push_back(Track{});
-    state.playlist.push_back(Track{});
-    state.cursor.moveTo(15, 5);
+    appState.playlist.push_back(Track{});
+    appState.playlist.push_back(Track{});
+    appState.cursor.moveTo(15, 5);
 
     Event key;
 
@@ -84,14 +94,15 @@ int main(int argc, char* argv[]) {
         std::cout << ANSI::CLEAR_SCREEN;
         std::cout << "\033[H";
         terminalFace.printTop();
-        terminalFace.printPlaylist(state.playlist);
+        terminalFace.printPlaylist(appState.playlist);
+        std::cout << appState.isPlaying << std::endl;
 
-        state.cursor.show();
+        appState.cursor.show();
 
         std::cout << std::flush;
 
         key = getEvent(terminalFace.readKey());
-        eventHandler(key, state);
+        eventHandler(key, appState);
 
     } while (key != QUIT);
 
