@@ -9,12 +9,15 @@
 #include "include/WaveGenerator.h"
 #include "include/Display.h"
 #include "include/ClipDialog.h"
+#include "include/FileDialog.h"
+#include "include/PlaylistRenderer.h"
 
 struct AppState {
     Cursor cursor;
     std::vector<Track> playlist;
     bool isPlaying = false;
     std::unique_ptr<ClipDialog> clipDialog;
+    std::unique_ptr<FileDialog> fileDialog;
     int selectedTrackForClip = -1;
 };
 
@@ -23,7 +26,7 @@ enum Event {
     CURSOR_UP, CURSOR_DOWN, CURSOR_LEFT, CURSOR_RIGHT,
     SELECT, DELETE,
     PLAY, PAUSE,
-    CREATE_CLIP, CONFIRM, CANCEL,
+    CREATE_CLIP, FILE_MENU, CONFIRM, CANCEL,
     TAB, BACKSPACE,
     CHAR_INPUT
 };
@@ -39,6 +42,7 @@ EventWithChar getEvent(int key) {
 
     switch (key) {
         case TerminalSettings::KEY_F1: result.event = QUIT; break;
+        case TerminalSettings::KEY_F2: result.event = FILE_MENU; break;
 
         case TerminalSettings::KEY_ARROW_UP: result.event = CURSOR_UP; break;
         case TerminalSettings::KEY_ARROW_DOWN: result.event = CURSOR_DOWN; break;
@@ -98,6 +102,26 @@ void createClipFromDialog(AppState &state, WaveGenerator &waveGenerator) {
     state.selectedTrackForClip = -1;
 }
 
+void handleFileDialogResult(AppState &state) {
+    if (!state.fileDialog) {
+        return;
+    }
+
+    auto result = state.fileDialog->getResult();
+
+    if (!result.confirmed) {
+        state.fileDialog.reset();
+        return;
+    }
+
+    if (result.option == FileDialog::RENDER) {
+        PlaylistRenderer renderer(44100);
+        renderer.renderToFile(state.playlist, result.path);
+    }
+
+    state.fileDialog.reset();
+}
+
 void deleteHandler(AppState &state) {
     int trackY = state.cursor.getY();
 
@@ -139,6 +163,35 @@ void selectHandler(AppState &state) {
 void eventHandler(EventWithChar eventData, AppState &state, WaveGenerator &waveGenerator) {
     Event event = eventData.event;
 
+    if (state.fileDialog && !state.fileDialog->isComplete()) {
+        switch (event) {
+            case CURSOR_UP:
+                state.fileDialog->moveUp();
+                return;
+            case CURSOR_DOWN:
+                state.fileDialog->moveDown();
+                return;
+            case BACKSPACE:
+                state.fileDialog->handleBackspace();
+                return;
+            case CONFIRM:
+                state.fileDialog->confirm();
+                if (state.fileDialog->isComplete()) {
+                    handleFileDialogResult(state);
+                }
+                return;
+            case CANCEL:
+                state.fileDialog->cancel();
+                handleFileDialogResult(state);
+                return;
+            case CHAR_INPUT:
+                state.fileDialog->handleInput(eventData.character);
+                return;
+            default:
+                return;
+        }
+    }
+
     if (state.clipDialog && !state.clipDialog->isComplete()) {
         switch (event) {
             case TAB:
@@ -175,6 +228,10 @@ void eventHandler(EventWithChar eventData, AppState &state, WaveGenerator &waveG
         case PLAY: state.isPlaying = true; break;
         case PAUSE: state.isPlaying = false; break;
 
+        case FILE_MENU:
+            state.fileDialog = std::make_unique<FileDialog>();
+            break;
+
         case CREATE_CLIP:
             if (state.cursor.getY() >= 6 &&
                 state.cursor.getY() < 6 + state.playlist.size()) {
@@ -205,7 +262,9 @@ int main(int argc, char* argv[]) {
         display.printTop(terminalSettings.terminalWidth());
         display.printPlaylist(appState.playlist, terminalSettings.terminalWidth());
 
-        if (appState.clipDialog && !appState.clipDialog->isComplete()) {
+        if (appState.fileDialog && !appState.fileDialog->isComplete()) {
+            appState.fileDialog->render(terminalSettings.terminalWidth());
+        } else if (appState.clipDialog && !appState.clipDialog->isComplete()) {
             appState.clipDialog->render(terminalSettings.terminalWidth());
         } else {
             appState.cursor.show();
