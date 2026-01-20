@@ -9,6 +9,8 @@ add_executable(Kore main.cpp
         src/Clip.cpp
         include/Clip.h
         include/AnsiFormat.h
-        include/Track.cpp
+        src/Track.cpp
         include/Track.h
+        src/WaveGenerator.cpp
+        include/WaveGenerator.h
 )
