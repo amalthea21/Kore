@@ -1,4 +1,4 @@
-#include "Display.h"
+#include "../include/Display.h"
 
 void Display::printTop(const int termWidth) {
     std::string top = " Kore v0.1";
@@ -13,8 +13,9 @@ void Display::printTop(const int termWidth) {
 }
 
 void Display::printPlaylist(const std::vector<Track>& playlist, const int termWidth) {
-    int fixedWidth = 14;
-    int remainingWidth = termWidth - fixedWidth;
+    int fixedWidth = 14, startPos, clipLength, endPos, remainingWidth = termWidth - fixedWidth;
+    float timescale = 2.0f;
+
     if (remainingWidth < 0) remainingWidth = 0;
 
     if (playlist.empty())
@@ -27,7 +28,6 @@ void Display::printPlaylist(const std::vector<Track>& playlist, const int termWi
     std::cout << "╮";
 
     for (int i = 0; i < playlist.size(); i++) {
-
         std::string circle;
 
         if (playlist[i].on)
@@ -36,9 +36,33 @@ void Display::printPlaylist(const std::vector<Track>& playlist, const int termWi
             circle = " ◉ ";
 
         std::cout << "\n├ Track " << i+1 << circle << "│";
-        for (int j = 0; j < remainingWidth; j++) {
-            std::cout << " ";
+
+        // Create a NEW timeline for each track
+        std::vector<char> timeline(remainingWidth, ' ');
+
+        // Clip representation - fill the timeline
+        for (const auto& clip : playlist[i].track) {
+            startPos = static_cast<int>(clip.at / timescale);
+            clipLength = static_cast<int>(clip.time / timescale);
+
+            if (startPos < remainingWidth) {
+                endPos = std::min(startPos + clipLength, remainingWidth);
+
+                for (int pos = startPos; pos < endPos; pos++) {
+                    if (pos == startPos)
+                        timeline[pos] = '/';
+                    else if (pos == endPos - 1)
+                        timeline[pos] = '\\';
+                    else
+                        timeline[pos] = '-';
+                }
+            }
         }
+
+        for (char c : timeline) {
+            std::cout << c;
+        }
+
         std::cout << "│";
     }
 

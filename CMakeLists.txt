@@ -20,6 +20,6 @@ add_executable(Kore main.cpp
 
         include/WaveGenerator.h
         src/WaveGenerator.cpp
-        include/Display.cpp
+        src/Display.cpp
         include/Display.h
 )
