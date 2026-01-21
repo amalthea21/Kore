@@ -2,6 +2,8 @@
 
 Kore is a lightweight, keyboard-driven DAW, running entirely in the terminal
 
+<img width="2847" height="519" alt="grafik" src="https://github.com/user-attachments/assets/ba184153-c492-44d8-9667-a46b4fcbbb52" />
+
 <br>
 
 ## 📋 **Prerequisites**:
