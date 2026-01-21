@@ -12,107 +12,7 @@
 #include "include/FileDialog.h"
 #include "include/PlaylistRenderer.h"
 #include "include/EventSystem.h"
-
-struct AppState {
-    Cursor cursor;
-    std::vector<Track> playlist;
-    bool isPlaying = false;
-    std::unique_ptr<ClipDialog> clipDialog;
-    std::unique_ptr<FileDialog> fileDialog;
-    int selectedTrackForClip = -1;
-};
-
-void createClipFromDialog(AppState &state, WaveGenerator &waveGenerator) {
-    if (state.selectedTrackForClip < 0 ||
-        state.selectedTrackForClip >= state.playlist.size()) {
-        return;
-    }
-
-    if (!state.clipDialog) {
-        return;
-    }
-
-    auto params = state.clipDialog->getParams();
-
-    if (!params.confirmed) {
-        state.clipDialog.reset();
-        state.selectedTrackForClip = -1;
-        return;
-    }
-
-    Clip newClip(static_cast<int>(params.time));
-    newClip.at = params.at;
-    newClip.time = params.time;
-
-    newClip.samples = waveGenerator.Generate(
-        WaveGenerator::SINE,
-        newClip.time,
-        params.frequency
-    );
-
-    state.playlist[state.selectedTrackForClip].track.push_back(std::move(newClip));
-
-    state.clipDialog.reset();
-    state.selectedTrackForClip = -1;
-}
-
-void handleFileDialogResult(AppState &state) {
-    if (!state.fileDialog) {
-        return;
-    }
-
-    auto result = state.fileDialog->getResult();
-
-    if (!result.confirmed) {
-        state.fileDialog.reset();
-        return;
-    }
-
-    if (result.option == FileDialog::RENDER) {
-        PlaylistRenderer renderer(44100);
-        renderer.renderToFile(state.playlist, result.path);
-    }
-
-    state.fileDialog.reset();
-}
-
-void deleteHandler(AppState &state) {
-    int trackY = state.cursor.getY();
-
-    if (trackY >= 6 && trackY < 6 + state.playlist.size()) {
-        int trackIndex = trackY - 6;
-        state.playlist.erase(state.playlist.begin() + trackIndex);
-
-        if (state.cursor.getY() >= 6 + state.playlist.size() && state.playlist.size() > 0) {
-            state.cursor.moveUp();
-        }
-    }
-}
-
-void selectHandler(AppState &state) {
-    int cursorX = state.cursor.getX();
-    int cursorY = state.cursor.getY();
-
-    if (cursorY == 2 && cursorX >= 3 && cursorX <= 5) { // Play
-        state.isPlaying = true;
-    }
-    else if (cursorY == 2 && cursorX >= 7 && cursorX <= 9) { // Pause
-        state.isPlaying = false;
-    }
-    else if (cursorY >= 6 && cursorY < 6 + state.playlist.size()) {
-        int trackIndex = cursorY - 6;
-
-        if (cursorX >= 14) {  // In the timeline area
-            state.clipDialog = std::make_unique<ClipDialog>();
-            state.selectedTrackForClip = trackIndex;
-        } else {  // On the mute/solo button
-            state.playlist[trackIndex].on = !state.playlist[trackIndex].on;
-        }
-    }
-    else if (cursorY == 6 + state.playlist.size() + 1) {
-        state.playlist.push_back(Track{});
-    }
-}
+#include "include/AppState.h"
 
 void eventHandler(EventSystem::EventWithChar eventData, AppState &state, WaveGenerator &waveGenerator) {
     auto event = eventData.event;
@@ -131,12 +31,12 @@ void eventHandler(EventSystem::EventWithChar eventData, AppState &state, WaveGen
             case EventSystem::CONFIRM:
                 state.fileDialog->confirm();
                 if (state.fileDialog->isComplete()) {
-                    handleFileDialogResult(state);
+                    state.handleFileDialogResult();
                 }
                 return;
             case EventSystem::CANCEL:
                 state.fileDialog->cancel();
-                handleFileDialogResult(state);
+                state.handleFileDialogResult();
                 return;
             case EventSystem::CHAR_INPUT:
                 state.fileDialog->handleInput(eventData.character);
@@ -156,11 +56,11 @@ void eventHandler(EventSystem::EventWithChar eventData, AppState &state, WaveGen
                 return;
             case EventSystem::CONFIRM:
                 state.clipDialog->confirm();
-                createClipFromDialog(state, waveGenerator);
+                state.createClipFromDialog(waveGenerator);
                 return;
             case EventSystem::CANCEL:
                 state.clipDialog->cancel();
-                createClipFromDialog(state, waveGenerator);
+                state.createClipFromDialog(waveGenerator);
                 return;
             case EventSystem::CHAR_INPUT:
                 state.clipDialog->handleInput(eventData.character);
@@ -176,8 +76,8 @@ void eventHandler(EventSystem::EventWithChar eventData, AppState &state, WaveGen
         case EventSystem::CURSOR_LEFT: state.cursor.moveLeft(); break;
         case EventSystem::CURSOR_RIGHT: state.cursor.moveRight(); break;
 
-        case EventSystem::SELECT: selectHandler(state); break;
-        case EventSystem::DELETE: deleteHandler(state); break;
+        case EventSystem::SELECT: state.selectHandler(); break;
+        case EventSystem::DELETE: state.deleteHandler(); break;
 
         case EventSystem::PLAY: state.isPlaying = true; break;
         case EventSystem::PAUSE: state.isPlaying = false; break;
