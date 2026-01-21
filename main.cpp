@@ -11,6 +11,7 @@
 #include "include/ClipDialog.h"
 #include "include/FileDialog.h"
 #include "include/PlaylistRenderer.h"
+#include "include/EventSystem.h"
 
 struct AppState {
     Cursor cursor;
@@ -20,53 +21,6 @@ struct AppState {
     std::unique_ptr<FileDialog> fileDialog;
     int selectedTrackForClip = -1;
 };
-
-enum Event {
-    QUIT,
-    CURSOR_UP, CURSOR_DOWN, CURSOR_LEFT, CURSOR_RIGHT,
-    SELECT, DELETE,
-    PLAY, PAUSE,
-    CREATE_CLIP, FILE_MENU, CONFIRM, CANCEL,
-    TAB, BACKSPACE,
-    CHAR_INPUT
-};
-
-struct EventWithChar {
-    Event event;
-    char character;
-};
-
-EventWithChar getEvent(int key) {
-    EventWithChar result;
-    result.character = 0;
-
-    switch (key) {
-        case TerminalSettings::KEY_F1: result.event = QUIT; break;
-        case TerminalSettings::KEY_F2: result.event = FILE_MENU; break;
-
-        case TerminalSettings::KEY_ARROW_UP: result.event = CURSOR_UP; break;
-        case TerminalSettings::KEY_ARROW_DOWN: result.event = CURSOR_DOWN; break;
-        case TerminalSettings::KEY_ARROW_LEFT: result.event = CURSOR_LEFT; break;
-        case TerminalSettings::KEY_ARROW_RIGHT: result.event = CURSOR_RIGHT; break;
-        case ' ': result.event = SELECT; break;
-        case TerminalSettings::KEY_DELETE: result.event = DELETE; break;
-        case 'c': case 'C': result.event = CREATE_CLIP; break;
-        case '\r': case '\n': result.event = CONFIRM; break;
-        case TerminalSettings::KEY_ESC: result.event = CANCEL; break;
-        case '\t': result.event = TAB; break;
-        case 127: case 8: result.event = BACKSPACE; break;
-        default:
-            if (key >= 32 && key <= 126) {
-                result.event = CHAR_INPUT;
-                result.character = static_cast<char>(key);
-            } else {
-                result.event = QUIT;
-            }
-            break;
-    }
-
-    return result;
-}
 
 void createClipFromDialog(AppState &state, WaveGenerator &waveGenerator) {
     if (state.selectedTrackForClip < 0 ||
@@ -160,31 +114,31 @@ void selectHandler(AppState &state) {
     }
 }
 
-void eventHandler(EventWithChar eventData, AppState &state, WaveGenerator &waveGenerator) {
-    Event event = eventData.event;
+void eventHandler(EventSystem::EventWithChar eventData, AppState &state, WaveGenerator &waveGenerator) {
+    auto event = eventData.event;
 
     if (state.fileDialog && !state.fileDialog->isComplete()) {
         switch (event) {
-            case CURSOR_UP:
+            case EventSystem::CURSOR_UP:
                 state.fileDialog->moveUp();
                 return;
-            case CURSOR_DOWN:
+            case EventSystem::CURSOR_DOWN:
                 state.fileDialog->moveDown();
                 return;
-            case BACKSPACE:
+            case EventSystem::BACKSPACE:
                 state.fileDialog->handleBackspace();
                 return;
-            case CONFIRM:
+            case EventSystem::CONFIRM:
                 state.fileDialog->confirm();
                 if (state.fileDialog->isComplete()) {
                     handleFileDialogResult(state);
                 }
                 return;
-            case CANCEL:
+            case EventSystem::CANCEL:
                 state.fileDialog->cancel();
                 handleFileDialogResult(state);
                 return;
-            case CHAR_INPUT:
+            case EventSystem::CHAR_INPUT:
                 state.fileDialog->handleInput(eventData.character);
                 return;
             default:
@@ -194,21 +148,21 @@ void eventHandler(EventWithChar eventData, AppState &state, WaveGenerator &waveG
 
     if (state.clipDialog && !state.clipDialog->isComplete()) {
         switch (event) {
-            case TAB:
+            case EventSystem::TAB:
                 state.clipDialog->nextField();
                 return;
-            case BACKSPACE:
+            case EventSystem::BACKSPACE:
                 state.clipDialog->handleBackspace();
                 return;
-            case CONFIRM:
+            case EventSystem::CONFIRM:
                 state.clipDialog->confirm();
                 createClipFromDialog(state, waveGenerator);
                 return;
-            case CANCEL:
+            case EventSystem::CANCEL:
                 state.clipDialog->cancel();
                 createClipFromDialog(state, waveGenerator);
                 return;
-            case CHAR_INPUT:
+            case EventSystem::CHAR_INPUT:
                 state.clipDialog->handleInput(eventData.character);
                 return;
             default:
@@ -217,22 +171,22 @@ void eventHandler(EventWithChar eventData, AppState &state, WaveGenerator &waveG
     }
 
     switch (event) {
-        case CURSOR_UP: state.cursor.moveUp(); break;
-        case CURSOR_DOWN: state.cursor.moveDown(); break;
-        case CURSOR_LEFT: state.cursor.moveLeft(); break;
-        case CURSOR_RIGHT: state.cursor.moveRight(); break;
+        case EventSystem::CURSOR_UP: state.cursor.moveUp(); break;
+        case EventSystem::CURSOR_DOWN: state.cursor.moveDown(); break;
+        case EventSystem::CURSOR_LEFT: state.cursor.moveLeft(); break;
+        case EventSystem::CURSOR_RIGHT: state.cursor.moveRight(); break;
 
-        case SELECT: selectHandler(state); break;
-        case DELETE: deleteHandler(state); break;
+        case EventSystem::SELECT: selectHandler(state); break;
+        case EventSystem::DELETE: deleteHandler(state); break;
 
-        case PLAY: state.isPlaying = true; break;
-        case PAUSE: state.isPlaying = false; break;
+        case EventSystem::PLAY: state.isPlaying = true; break;
+        case EventSystem::PAUSE: state.isPlaying = false; break;
 
-        case FILE_MENU:
+        case EventSystem::FILE_MENU:
             state.fileDialog = std::make_unique<FileDialog>();
             break;
 
-        case CREATE_CLIP:
+        case EventSystem::CREATE_CLIP:
             if (state.cursor.getY() >= 6 &&
                 state.cursor.getY() < 6 + state.playlist.size()) {
                 state.clipDialog = std::make_unique<ClipDialog>();
@@ -249,7 +203,8 @@ int main(int argc, char* argv[]) {
     Display display;
     WaveGenerator waveGenerator{};
     AppState appState{};
-    EventWithChar key;
+    EventSystem eventSystem{};
+    EventSystem::EventWithChar key;
 
     appState.playlist.push_back(Track{});
     appState.playlist.push_back(Track{});
@@ -272,10 +227,11 @@ int main(int argc, char* argv[]) {
 
         std::cout << std::flush;
 
-        key = getEvent(terminalSettings.readKey());
+        key = eventSystem.getEvent(terminalSettings.readKey());
+
         eventHandler(key, appState, waveGenerator);
 
-    } while (key.event != QUIT);
+    } while (key.event != EventSystem::QUIT);
 
     terminalSettings.restoreTerminal();
 }

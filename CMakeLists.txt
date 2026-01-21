@@ -30,4 +30,6 @@ add_executable(Kore main.cpp
         src/PlaylistRenderer.cpp
         include/FileDialog.h
         src/FileDialog.cpp
+        src/EventSystem.cpp
+        include/EventSystem.h
 )
