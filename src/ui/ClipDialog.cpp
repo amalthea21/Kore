@@ -50,7 +50,7 @@ void ClipDialog::render(int termWidth) const {
     for (int i = 0; i < startX; i++) std::cout << " ";
     std::cout << "│" << ANSI::BOLD << "           Create New Clip"
               << ANSI::RESET;
-    for (int i = 0; i < dialogWidth - 29; i++) std::cout << " ";
+    for (int i = 0; i < dialogWidth - 28; i++) std::cout << " ";
     std::cout << "│\n";
 
     for (int i = 0; i < startX; i++) std::cout << " ";
@@ -105,13 +105,13 @@ void ClipDialog::render(int termWidth) const {
     for (int i = 0; i < startX; i++) std::cout << " ";
     std::cout << "│ " << ANSI::DIM << "Tab: Next field  Enter: Confirm  ESC: Cancel"
               << ANSI::RESET;
-    for (int i = 0; i < dialogWidth - 49; i++) std::cout << " ";
+    for (int i = 0; i < dialogWidth - 48; i++) std::cout << " ";
     std::cout << "│\n";
 
     for (int i = 0; i < startX; i++) std::cout << " ";
     std::cout << "│ " << ANSI::DIM << "Note examples: A4, C#5, D3, or frequency (Hz)"
               << ANSI::RESET;
-    for (int i = 0; i < dialogWidth - 52; i++) std::cout << " ";
+    for (int i = 0; i < dialogWidth - 51; i++) std::cout << " ";
     std::cout << "│\n";
 
     for (int i = 0; i < startX; i++) std::cout << " ";

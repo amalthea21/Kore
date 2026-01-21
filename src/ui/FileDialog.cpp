@@ -28,7 +28,7 @@ void FileDialog::renderMenu(int termWidth) const {
     for (int i = 0; i < startX; i++) std::cout << " ";
     std::cout << "│" << ANSI::BOLD << "                File Menu"
               << ANSI::RESET;
-    for (int i = 0; i < dialogWidth - 28; i++) std::cout << " ";
+    for (int i = 0; i < dialogWidth - 27; i++) std::cout << " ";
     std::cout << "│\n";
 
     for (int i = 0; i < startX; i++) std::cout << " ";
@@ -52,11 +52,11 @@ void FileDialog::renderMenu(int termWidth) const {
     std::cout << "│  ";
     if (selectedOption == LOAD) {
         std::cout << ANSI::BG_BLUE << ANSI::WHITE << "> Load from file" << ANSI::DIM << " (Coming soon)";
-        for (int i = 0; i < 17; i++) std::cout << " ";
+        for (int i = 0; i < 16; i++) std::cout << " ";
         std::cout << ANSI::RESET;
     } else {
         std::cout << ANSI::DIM << "  Load from file (Coming soon)";
-        for (int i = 0; i < 17; i++) std::cout << " ";
+        for (int i = 0; i < 16; i++) std::cout << " ";
         std::cout << ANSI::RESET;
     }
     std::cout << "│\n";
@@ -70,7 +70,7 @@ void FileDialog::renderMenu(int termWidth) const {
         std::cout << ANSI::RESET;
     } else {
         std::cout << "  Cancel";
-        for (int i = 0; i < 40; i++) std::cout << " ";
+        for (int i = 0; i < 38; i++) std::cout << " ";
     }
     std::cout << "│\n";
 
@@ -82,7 +82,7 @@ void FileDialog::renderMenu(int termWidth) const {
     for (int i = 0; i < startX; i++) std::cout << " ";
     std::cout << "│ " << ANSI::DIM << "↑↓: Navigate  Enter: Select  ESC: Cancel"
               << ANSI::RESET;
-    for (int i = 0; i < dialogWidth - 47; i++) std::cout << " ";
+    for (int i = 0; i < dialogWidth - 43; i++) std::cout << " ";
     std::cout << "│\n";
 
     for (int i = 0; i < startX; i++) std::cout << " ";
