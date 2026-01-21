@@ -1,6 +1,6 @@
 #include <math.h>
 
-#include "../include/WaveGenerator.h"
+#include "../../include/audio/WaveGenerator.h"
 
 float* WaveGenerator::Generate(Type type, float time, float frequency) {
     const int SAMPLE_RATE = 44100;

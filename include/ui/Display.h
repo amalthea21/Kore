@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "TerminalSettings.h"
-#include "Track.h"
+#include "../util/TerminalSettings.h"
+#include "../audio/Track.h"
 #include "AnsiFormat.h"
 
 /**

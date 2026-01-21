@@ -1,5 +1,5 @@
-#include "../include/PlaylistRenderer.h"
-#include "../include/WavWriter.h"
+#include "../../include/audio/PlaylistRenderer.h"
+#include "../../include/audio/WavWriter.h"
 #include <algorithm>
 #include <cmath>
 

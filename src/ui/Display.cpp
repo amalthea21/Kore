@@ -1,4 +1,4 @@
-#include "../include/Display.h"
+#include "../../include/ui/Display.h"
 
 void Display::printTop(const int termWidth) {
     std::string top = " Kore v0.1";

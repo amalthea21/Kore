@@ -4,40 +4,40 @@ project(Kore)
 set(CMAKE_CXX_STANDARD 26)
 
 add_executable(Kore main.cpp
-        include/AnsiFormat.h
+        include/ui/AnsiFormat.h
 
-        include/Clip.h
-        src/Clip.cpp
+        include/audio/Clip.h
+        src/audio/Clip.cpp
 
-        include/Cursor.h
-        src/Cursor.cpp
+        include/core/Cursor.h
+        src/core/Cursor.cpp
 
-        include/TerminalSettings.h
-        src/TerminalSettings.cpp
+        include/util/TerminalSettings.h
+        src/util/TerminalSettings.cpp
 
-        include/Track.h
-        src/Track.cpp
+        include/audio/Track.h
+        src/audio/Track.cpp
 
-        include/WaveGenerator.h
-        src/WaveGenerator.cpp
+        include/audio/WaveGenerator.h
+        src/audio/WaveGenerator.cpp
 
-        src/Display.cpp
-        include/Display.h
+        src/ui/Display.cpp
+        include/ui/Display.h
 
-        include/ClipDialog.h
-        src/ClipDialog.cpp
+        include/ui/ClipDialog.h
+        src/ui/ClipDialog.cpp
 
-        src/WavWriter.cpp
-        include/WavWriter.h
+        src/audio/WavWriter.cpp
+        include/audio/WavWriter.h
 
-        include/PlaylistRenderer.h
-        src/PlaylistRenderer.cpp
+        include/audio/PlaylistRenderer.h
+        src/audio/PlaylistRenderer.cpp
 
-        include/FileDialog.h
-        src/FileDialog.cpp
+        include/ui/FileDialog.h
+        src/ui/FileDialog.cpp
 
-        src/EventSystem.cpp
-        include/EventSystem.h
-        src/AppState.cpp
-        include/AppState.h
+        src/core/EventSystem.cpp
+        include/core/EventSystem.h
+        src/core/AppState.cpp
+        include/core/AppState.h
 )

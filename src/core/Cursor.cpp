@@ -1,5 +1,5 @@
-#include "../include/Cursor.h"
-#include "../include/AnsiFormat.h"
+#include "../../include/core/Cursor.h"
+#include "../../include/ui/AnsiFormat.h"
 #include <iostream>
 
 Cursor::Cursor() : x(0), y(0) {

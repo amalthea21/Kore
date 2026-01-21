@@ -1,5 +1,5 @@
-#include "../include/ClipDialog.h"
-#include "../include/AnsiFormat.h"
+#include "../../include/ui/ClipDialog.h"
+#include "../../include/ui/AnsiFormat.h"
 #include <iostream>
 #include <sstream>
 #include <cmath>

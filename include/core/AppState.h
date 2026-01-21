@@ -3,12 +3,12 @@
 #include <memory>
 #include <vector>
 
-#include "Track.h"
-#include "ClipDialog.h"
+#include "../audio/Track.h"
+#include "../ui/ClipDialog.h"
 #include "Cursor.h"
-#include "FileDialog.h"
-#include "WaveGenerator.h"
-#include "PlaylistRenderer.h"
+#include "../ui/FileDialog.h"
+#include "../audio/WaveGenerator.h"
+#include "../audio/PlaylistRenderer.h"
 
 /**
  * @class AppState

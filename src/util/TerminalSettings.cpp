@@ -1,11 +1,11 @@
-#include "../include/TerminalSettings.h"
+#include "../../include/util/TerminalSettings.h"
 
 #include <unistd.h>
 #include <cstdio>
 #include <string>
 #include <sys/ioctl.h>
 
-#include "../include/AnsiFormat.h"
+#include "../../include/ui/AnsiFormat.h"
 
 TerminalSettings::TerminalSettings() {
     std::cout << ANSI::CLEAR_SCREEN << ANSI::HIDE_CURSOR << ANSI::RESET;

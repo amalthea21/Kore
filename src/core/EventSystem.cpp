@@ -1,5 +1,5 @@
-#include "../include/EventSystem.h"
-#include "../include/TerminalSettings.h"
+#include "../../include/core/EventSystem.h"
+#include "../../include/util/TerminalSettings.h"
 
 class WaveGenerator;
 

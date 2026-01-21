@@ -1,4 +1,4 @@
-#include "../include/AppState.h"
+#include "../../include/core/AppState.h"
 
 void AppState::createClipFromDialog(WaveGenerator waveGenerator) {
     if (selectedTrackForClip < 0 ||

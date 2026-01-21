@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-#include "Track.h"
+#include "../audio/Track.h"
 
 /**
  * @class TerminalSettings

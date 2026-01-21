@@ -1,4 +1,4 @@
-#include "../include/Clip.h"
+#include "../../include/audio/Clip.h"
 
 Clip::Clip(int t) : time(t), samples(new float[t * 44100]) {
 

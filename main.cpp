@@ -1,18 +1,18 @@
 #include <vector>
 #include <memory>
 
-#include "include/TerminalSettings.h"
-#include "include/Clip.h"
-#include "include/Track.h"
-#include "include/Cursor.h"
-#include "include/AnsiFormat.h"
-#include "include/WaveGenerator.h"
-#include "include/Display.h"
-#include "include/ClipDialog.h"
-#include "include/FileDialog.h"
-#include "include/PlaylistRenderer.h"
-#include "include/EventSystem.h"
-#include "include/AppState.h"
+#include "include/util/TerminalSettings.h"
+#include "include/audio/Clip.h"
+#include "include/audio/Track.h"
+#include "include/core/Cursor.h"
+#include "include/ui/AnsiFormat.h"
+#include "include/audio/WaveGenerator.h"
+#include "include/ui/Display.h"
+#include "include/ui/ClipDialog.h"
+#include "include/ui/FileDialog.h"
+#include "include/audio/PlaylistRenderer.h"
+#include "include/core/EventSystem.h"
+#include "include/core/AppState.h"
 
 void eventHandler(EventSystem::EventWithChar eventData, AppState &state, WaveGenerator &waveGenerator) {
     auto event = eventData.event;

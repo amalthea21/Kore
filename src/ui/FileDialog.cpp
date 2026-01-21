@@ -1,5 +1,5 @@
-#include "../include/FileDialog.h"
-#include "../include/AnsiFormat.h"
+#include "../../include/ui/FileDialog.h"
+#include "../../include/ui/AnsiFormat.h"
 #include <iostream>
 
 FileDialog::FileDialog()
